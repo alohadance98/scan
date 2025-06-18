@@ -14,6 +14,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Region;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -158,7 +159,11 @@ public class ScanDrawView extends SurfaceView implements SurfaceHolder.Callback 
             canvas.save();
             Path clipPath = new Path();
             clipPath.addRect(x-2,y-2,(float)(x+areaWidth+2),(float)(y+areaWidth+2),Path.Direction.CCW);
-            canvas.clipPath(clipPath, Region.Op.DIFFERENCE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                canvas.clipOutPath(clipPath);
+            } else {
+                canvas.clipPath(clipPath, Region.Op.DIFFERENCE);
+            }
 
             Paint maskPaint = new Paint();
             final int a = max(0, min(255, (int)floor(0.5 * 256.0)));
